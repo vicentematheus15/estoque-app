@@ -1,10 +1,22 @@
-import { View, Text, TextInput, Button, Alert } from 'react-native';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet
+} from 'react-native';
+
 import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 
 export default function LoginScreen() {
+  const { signIn } = useContext(AuthContext);
+
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
     if (!email || !senha) {
@@ -13,42 +25,75 @@ export default function LoginScreen() {
     }
 
     try {
+      setLoading(true);
+
       const response = await api.post('/auth/login', {
         email,
         senha
       });
 
-      console.log(response.data); // 🔍 importante agora
+      // salva usuário no contexto
+      signIn(response.data);
 
       Alert.alert('Sucesso', 'Login realizado com sucesso');
+
+      console.log('Usuário logado:', response.data);
 
     } catch (error) {
       Alert.alert(
         'Erro',
-        error.response?.data?.message || 'Erro ao conectar com o servidor'
+        error.response?.data?.message || 'Erro ao fazer login'
       );
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>Email</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+
       <TextInput
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
-        autoCapitalize="none"
-        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
       />
 
-      <Text>Senha</Text>
       <TextInput
+        style={styles.input}
+        placeholder="Senha"
+        secureTextEntry
         value={senha}
         onChangeText={setSenha}
-        secureTextEntry
-        style={{ borderWidth: 1, marginBottom: 20, padding: 8 }}
       />
 
-      <Button title="Entrar" onPress={handleLogin} />
+      <Button
+        title={loading ? 'Entrando...' : 'Entrar'}
+        onPress={handleLogin}
+        disabled={loading}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 5
+  }
+});
