@@ -60,6 +60,18 @@ exports.deletar = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // verifica se existe estoque vinculado
+    const [[estoque]] = await pool.query(
+      'SELECT COUNT(*) AS total FROM produto_estoque WHERE id_produto = ?',
+      [id]
+    );
+
+    if (estoque.total > 0) {
+      return res.status(400).json({
+        message: 'Não é possível deletar produto com estoque vinculado'
+      });
+    }
+
     const [result] = await pool.query(
       'DELETE FROM produto WHERE id_produto = ?',
       [id]
@@ -71,6 +83,7 @@ exports.deletar = async (req, res) => {
 
     res.json({ message: 'Produto deletado com sucesso' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Erro ao deletar produto' });
   }
 };
