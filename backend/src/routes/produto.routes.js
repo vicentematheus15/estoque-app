@@ -3,10 +3,16 @@ const router = express.Router();
 const produtoController = require('../controllers/produtoController');
 const permissao = require('../middlewares/permissao');
 
-// listar produtos (admin e vendedor)
+// listar produtos
 router.get('/', permissao(['admin', 'vendedor']), produtoController.listar);
 
-// criar produto (admin)
+// criar produto
 router.post('/', permissao(['admin']), produtoController.criar);
+
+// editar produto
+router.put('/:id', permissao(['admin']), produtoController.atualizar);
+
+// deletar produto
+router.delete('/:id', permissao(['admin']), produtoController.deletar);
 
 module.exports = router;
