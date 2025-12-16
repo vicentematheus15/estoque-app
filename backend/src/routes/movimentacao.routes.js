@@ -10,6 +10,7 @@ router.post('/entrada', permissao(['admin']), movimentacaoController.entrada);
 router.post('/saida', permissao(['admin', 'vendedor']), movimentacaoController.saida);
 
 // histórico
-router.get('/:id_produto_estoque', permissao(['admin', 'vendedor']), movimentacaoController.historico);
+router.get('/historico', permissao(['admin', 'vendedor']), movimentacaoController.historico);
+
 
 module.exports = router;
