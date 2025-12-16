@@ -4,12 +4,6 @@
 
 Backend desenvolvido em **Node.js + Express + MySQL**, com foco em simplicidade e boas práticas. O sistema controla **produtos, estoque e movimentações**, com **controle de acesso por nível de usuário** (admin e vendedor).
 
-Projeto pensado para:
-
-* Trabalho de faculdade
-* Portfólio no GitHub
-* Base realista para app mobile (React Native / Expo)
-
 ---
 
 ## 🛠️ Tecnologias Utilizadas
@@ -20,8 +14,6 @@ Projeto pensado para:
 * **bcryptjs** (hash de senha)
 * **cors**
 * **nodemon** (ambiente dev)
-
-Sem TypeScript (intencional, para reduzir complexidade).
 
 ---
 
