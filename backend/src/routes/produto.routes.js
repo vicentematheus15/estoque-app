@@ -13,6 +13,6 @@ router.post('/', permissao(['admin']), produtoController.criar);
 router.put('/:id', permissao(['admin']), produtoController.atualizar);
 
 // deletar produto
-router.delete('/:id', permissao(['admin']), produtoController.deletar);
+router.put('/:id/desativar', permissao(['admin']), produtoController.desativarProduto);
 
 module.exports = router;

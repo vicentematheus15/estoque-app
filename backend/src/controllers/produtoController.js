@@ -11,6 +11,7 @@ exports.listar = async (req, res) => {
         f.nome_fornecedor
       FROM produto p
       LEFT JOIN fornecedor f ON p.id_fornecedor = f.id_fornecedor
+      WHERE p.ativo = true
     `);
 
     res.json(produtos);
@@ -56,24 +57,12 @@ exports.atualizar = async (req, res) => {
   }
 };
 
-exports.deletar = async (req, res) => {
+exports.desativarProduto = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // verifica se existe estoque vinculado
-    const [[estoque]] = await pool.query(
-      'SELECT COUNT(*) AS total FROM produto_estoque WHERE id_produto = ?',
-      [id]
-    );
-
-    if (estoque.total > 0) {
-      return res.status(400).json({
-        message: 'Não é possível deletar produto com estoque vinculado'
-      });
-    }
-
     const [result] = await pool.query(
-      'DELETE FROM produto WHERE id_produto = ?',
+      'UPDATE produto SET ativo = false WHERE id_produto = ?',
       [id]
     );
 
@@ -81,9 +70,10 @@ exports.deletar = async (req, res) => {
       return res.status(404).json({ message: 'Produto não encontrado' });
     }
 
-    res.json({ message: 'Produto deletado com sucesso' });
+    return res.json({ message: 'Produto desativado com sucesso' });
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Erro ao deletar produto' });
+    return res.status(500).json({ message: 'Erro ao desativar produto' });
   }
 };
