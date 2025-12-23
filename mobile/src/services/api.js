@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://192.168.0.2:3333'
-  //  http://localhost:3333 para testar com o axpo pelo celular
+  //  http://localhost:3333 para testar com o axpo pelo celular (ambos tem que estar conectados na mesma rede)
+});
 
 export default api;
